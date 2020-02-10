@@ -15,6 +15,7 @@ export class CrcaAgendaAutorizacion extends LitElement {
       }
       ul {
         color: var(--dile-input-error-border-color);
+        list-style: none;
       }
     `;
   }
