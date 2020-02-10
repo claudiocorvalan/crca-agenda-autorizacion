@@ -28,7 +28,8 @@ export class CrcaAgendaAutorizacion extends LitElement {
       urlAutorizacion: { type: String },
       urlAccion: { type: String },
       dataId: { type: Number },
-      error: { type: Array }
+      error: { type: Array },
+      disabled: { type: Boolean }
     };
   }
 
@@ -38,6 +39,7 @@ export class CrcaAgendaAutorizacion extends LitElement {
     this.urlAccion = '';
     this.dataId = 0;
     this.error = [];
+    this.disabled=false;
   }
 
   render() {
@@ -54,14 +56,15 @@ export class CrcaAgendaAutorizacion extends LitElement {
           type="password"
           label="Firma Autorizador" 
           @enter-pressed=${this._autorizar}
-          ?errored=${this._hasError(this.error)}>
+          ?errored=${this._hasError(this.error)}
+          ?disabled=${this.disabled}>
         </dile-input-type>
         
         ${this._hasError(this.error) 
           ? html`<ul>${ this.error.error.map( e => html`<li>${e}</li>`) }</ul>` 
           : ''}
         
-        <button class="btn btn-success" @click=${this._autorizar}>Autorizar</button>
+        <button class="btn btn-success" @click=${this._autorizar} ?disabled=${this.disabled}>Autorizar</button>
     </dile-modal>
     `;
   }
@@ -75,6 +78,7 @@ export class CrcaAgendaAutorizacion extends LitElement {
   }
 
   _autorizar() {
+    this.disabled=true;
     const data = { 'autorizacion_form[firma]': this.shadowRoot.getElementById('input').value };
 
     Axios.post(this.urlAutorizacion, qs.stringify(data))
@@ -98,10 +102,12 @@ export class CrcaAgendaAutorizacion extends LitElement {
       else {
         this.error=response.data;
       }
+      this.disabled=false;
     })
     .catch(function (error) {
       console.log(error);
       this.dispatchEvent(new CustomEvent('show-error-toast', { detail: error }));
+      this.disabled = false;
     });
   }
 
@@ -110,6 +116,7 @@ export class CrcaAgendaAutorizacion extends LitElement {
     this.urlAccion = '';
     this.dataId = 0;
     this.error = [];
+    this.disabled = false;
   }
 
   _hasError(er) {
