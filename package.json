@@ -1,0 +1,25 @@
+{
+  "name": "crca-agenda-autorizacion",
+  "version": "0.0.0",
+  "description": "Webcomponent crca-agenda-autorizacion following open-wc recommendations",
+  "author": "crca-agenda-autorizacion",
+  "license": "MIT",
+  "main": "index.js",
+  "module": "index.js",
+  "scripts": {
+    "start": "es-dev-server --app-index demo/index.html --node-resolve --open --watch",
+    "storybook": "start-storybook --node-resolve --watch --open",
+    "storybook:build": "build-storybook"
+  },
+  "dependencies": {
+    "axios": "^0.19.2",
+    "dile-input": "^2.5.1",
+    "dile-modal": "^1.5.2",
+    "lit-element": "^2.2.1",
+    "lit-html": "^1.1.2"
+  },
+  "devDependencies": {
+    "es-dev-server": "^1.23.0",
+    "@open-wc/demoing-storybook": "^1.0.1"
+  }
+}
