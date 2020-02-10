@@ -9,6 +9,8 @@ export class CrcaAgendaAutorizacion extends LitElement {
   static get styles() {
     return css`
       :host {
+        --dile-modal-close-icon-size: 24px;
+        --dile-modal-close-icon-color: var(--crca-agenda-autorizacion-text-color, #000);
         --dile-input-error-border-color: #dc3545;
         --dile-input-label-color: var(--crca-agenda-autorizacion-text-color, #000);
         color: var(--crca-agenda-autorizacion-text-color, #000);
@@ -40,19 +42,26 @@ export class CrcaAgendaAutorizacion extends LitElement {
 
   render() {
     return html`
-    <dile-modal id="modalAutorizacion" @dile-modal-closed="${this.__closed}">
-      <h2>Autorización ${this.title}</h2>
-      <dile-input-type
-        id="input" 
-        type="password"
-        label="Firma Autorizador" 
-        @enter-pressed=${this.__autorizar}
-        ?errored=${this.__hasError(this.error)}>
-      </dile-input-type>
-      ${this.__hasError(this.error) 
-        ? html`<ul>${ this.error.error.map( e => html`<li>${e}</li>`) }</ul>` 
-        : ''}
-      <button @click=${this.__autorizar}>Autorizar</button>
+    <dile-modal 
+      showCloseIcon
+      id="modalAutorizacion" 
+      @dile-modal-closed="${this._closed}">
+      
+        <h2>Autorización ${this.title}</h2>
+        
+        <dile-input-type
+          id="input" 
+          type="password"
+          label="Firma Autorizador" 
+          @enter-pressed=${this._autorizar}
+          ?errored=${this._hasError(this.error)}>
+        </dile-input-type>
+        
+        ${this._hasError(this.error) 
+          ? html`<ul>${ this.error.error.map( e => html`<li>${e}</li>`) }</ul>` 
+          : ''}
+        
+        <button class="btn btn-success" @click=${this._autorizar}>Autorizar</button>
     </dile-modal>
     `;
   }
@@ -65,7 +74,7 @@ export class CrcaAgendaAutorizacion extends LitElement {
     this.shadowRoot.getElementById('modalAutorizacion').open();
   }
 
-  __autorizar() {
+  _autorizar() {
     const data = { 'autorizacion_form[firma]': this.shadowRoot.getElementById('input').value };
 
     Axios.post(this.urlAutorizacion, qs.stringify(data))
@@ -96,14 +105,14 @@ export class CrcaAgendaAutorizacion extends LitElement {
     });
   }
 
-  __closed() {
+  _closed() {
     this.title = '';
     this.urlAccion = '';
     this.dataId = 0;
     this.error = [];
   }
 
-  __hasError(er) {
+  _hasError(er) {
     return er.error !== undefined;
   }
 }
