@@ -1,5 +1,5 @@
 import { html, css, LitElement } from 'lit-element';
-import { axios} from 'axios';
+import Axios from 'axios';
 import qs from 'qs';
 
 import 'dile-modal';
@@ -13,7 +13,7 @@ export class CrcaAgendaAutorizacion extends LitElement {
         --dile-input-label-color: var(--crca-agenda-autorizacion-text-color, #000);
         color: var(--crca-agenda-autorizacion-text-color, #000);
       }
-      div {
+      ul {
         color: var(--dile-input-error-border-color);
       }
     `;
@@ -47,7 +47,7 @@ export class CrcaAgendaAutorizacion extends LitElement {
       @enter-pressed=${this.__autorizar}
       ?errored=${this.__hasError(this.error)}></dile-input>
       ${this.__hasError(this.error) 
-        ? html`<div>${this.error}</div>` 
+        ? html`<ul>${this.error}</ul>` 
         : ''}
       <button @click=${this.__autorizar}>Autorizar</button>
     </dile-modal>
@@ -62,20 +62,35 @@ export class CrcaAgendaAutorizacion extends LitElement {
   }
 
   __autorizar() {
-    const data = { 'id': this.shadowRoot.getElementById('input').value };
-    const options = {
-      method: 'POST',
-      headers: { 'content-type': 'application/x-www-form-urlencoded' },
-      data: qs.stringify(data),
-      url: this.urlAutorizacion,
-    };
-    
-    axios(options)
-    .then(function (response) {
-      console.log(response);
+    const data = { 'autorizacion_form[firma]': this.shadowRoot.getElementById('input').value };
+
+    Axios.post(this.urlAutorizacion, qs.stringify(data))
+    .then( response => {
+      if(response.data['success']!== undefined){
+        const dataAccion = {
+          autorizadorId: response.data.success.autorizadorId,
+          data: this.dataId
+        } 
+        Axios.post(this.urlAccion, dataAccion)
+        .then(response => {
+            if(response.data.success !== undefined) {
+              window.location.reload;
+            }
+            else {
+              console.log(response.data.error);
+              this.dispatchEvent(new CustomEvent('show-error-toast', { detail: response.data.error }));
+            }
+         })
+      }
+      else {
+        response.data.error.forEach(element => {
+          this.error+=html`<li>${element}</li>`
+        });
+      }
     })
     .catch(function (error) {
       console.log(error);
+      this.dispatchEvent(new CustomEvent('show-error-toast', { detail: error }));
     });
   }
 
