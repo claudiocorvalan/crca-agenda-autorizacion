@@ -1,6 +1,6 @@
 {
   "name": "crca-agenda-autorizacion",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Webcomponent crca-agenda-autorizacion following open-wc recommendations",
   "author": "crca-agenda-autorizacion",
   "license": "MIT",
@@ -10,6 +10,10 @@
     "start": "es-dev-server --app-index demo/index.html --node-resolve --open --watch",
     "storybook": "start-storybook --node-resolve --watch --open",
     "storybook:build": "build-storybook"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/claudiocorvalan/crca-agenda-autorizacion.git"
   },
   "dependencies": {
     "axios": "^0.19.2",
