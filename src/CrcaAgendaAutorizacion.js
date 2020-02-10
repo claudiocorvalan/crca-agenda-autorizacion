@@ -3,7 +3,7 @@ import Axios from 'axios';
 import qs from 'qs';
 
 import 'dile-modal';
-import 'dile-input';
+import './dile-input-type';
 
 export class CrcaAgendaAutorizacion extends LitElement {
   static get styles() {
@@ -25,7 +25,7 @@ export class CrcaAgendaAutorizacion extends LitElement {
       urlAutorizacion: { type: String },
       urlAccion: { type: String },
       dataId: { type: Number },
-      error: { type: String }
+      error: { type: Array }
     };
   }
 
@@ -34,20 +34,22 @@ export class CrcaAgendaAutorizacion extends LitElement {
     this.title = '';
     this.urlAccion = '';
     this.dataId = 0;
-    this.error = '';
+    this.error = [];
   }
 
   render() {
     return html`
     <dile-modal id="modalAutorizacion" @dile-modal-closed="${this.__closed}">
       <h2>Autorización ${this.title}</h2>
-      <dile-input 
-      id="input" 
-      label="Firma Autorizador" 
-      @enter-pressed=${this.__autorizar}
-      ?errored=${this.__hasError(this.error)}></dile-input>
+      <dile-input-type
+        id="input" 
+        type="password"
+        label="Firma Autorizador" 
+        @enter-pressed=${this.__autorizar}
+        ?errored=${this.__hasError(this.error)}>
+      </dile-input-type>
       ${this.__hasError(this.error) 
-        ? html`<ul>${this.error}</ul>` 
+        ? html`<ul>${ this.error.error.map( e => html`<li>${e}</li>`) }</ul>` 
         : ''}
       <button @click=${this.__autorizar}>Autorizar</button>
     </dile-modal>
@@ -58,6 +60,7 @@ export class CrcaAgendaAutorizacion extends LitElement {
     this.title = title;
     this.urlAccion = urlAccion;
     this.dataId = dataId;
+    this.error = [];
     this.shadowRoot.getElementById('modalAutorizacion').open();
   }
 
@@ -83,9 +86,7 @@ export class CrcaAgendaAutorizacion extends LitElement {
          })
       }
       else {
-        response.data.error.forEach(element => {
-          this.error+=html`<li>${element}</li>`
-        });
+        this.error=response.data;
       }
     })
     .catch(function (error) {
@@ -98,10 +99,10 @@ export class CrcaAgendaAutorizacion extends LitElement {
     this.title = '';
     this.urlAccion = '';
     this.dataId = 0;
-    this.error = '';
+    this.error = [];
   }
 
   __hasError(er) {
-    return er.lenght>0;
+    return er.error !== undefined;
   }
 }
