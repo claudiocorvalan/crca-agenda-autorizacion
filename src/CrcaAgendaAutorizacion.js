@@ -78,7 +78,7 @@ export class CrcaAgendaAutorizacion extends LitElement {
         Axios.post(this.urlAccion, dataAccion)
         .then(response => {
             if(response.data.success !== undefined) {
-              window.location.reload;
+              window.location.reload();
             }
             else {
               console.log(response.data.error);
