@@ -16,7 +16,7 @@
     "url": "https://github.com/claudiocorvalan/crca-agenda-autorizacion.git"
   },
   "dependencies": {
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "dile-input": "^2.5.1",
     "dile-modal": "^1.5.2",
     "lit-element": "^2.2.1",
